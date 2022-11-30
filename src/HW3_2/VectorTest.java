@@ -1,44 +1,42 @@
-package HW3_1;
+package HW3_2;
 
-import java.util.HashMap;
 import java.util.Vector;
 
-public class HashMapTest {
+public class VectorTest {
 
     private volatile boolean running = true;
-    private HashMap<String, Integer> people = new HashMap<String, Integer>();
+    private Vector<String> people = new Vector<String>();
 
     private void addPerson() {
-        people.put(RandomUtils.randomString(), RandomUtils.randomInteger());
+        people.add(RandomUtils.randomString());
     } // safe
 
-    private void deletePeople(String pattern) { // check and act
-        Vector<String> hasPattern = new Vector<String>(); // safe and confined
+    private String getLast() { // check and act
         synchronized (people) { // client side locking
-            for (String key : people.keySet()) {
-                if (key.contains(pattern)) hasPattern.add(key);
-            }
+            int lastIndex = people.size() - 1;
+            if (lastIndex >= 0)
+                return people.get(lastIndex);
+            else return "empty";
         }
-        for (String key : hasPattern)
-            people.remove(key);
+
     }
 
-    private void printPeople() { // iteration
-        synchronized (people) { // client side locking
-            for (HashMap.Entry<String, Integer> entry : people.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
-            }
+    private void deleteLast() { // check and act
+        synchronized (people) {
+            int lastIndex = people.size() - 1;
+            if (lastIndex >= 0)
+                people.remove(lastIndex);
         }
-        System.out.println("-----------------------------------------");
     }
 
     public void run() {
-        // Start printer thread
+        // Start getter thread
         new Thread(new Runnable() {
             public void run() {
-                Thread.currentThread().setName("Printer");
+                Thread.currentThread().setName("Getter");
                 while (running) {
-                    printPeople();
+                    String person = getLast();
+                    System.out.println("Last: " + person);
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
@@ -52,7 +50,7 @@ public class HashMapTest {
             public void run() {
                 Thread.currentThread().setName("Deleter");
                 while (running) {
-                    deletePeople("a");
+                    deleteLast();
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
@@ -65,7 +63,7 @@ public class HashMapTest {
         for (int i = 0; i < 100; i++) {
             addPerson();
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
             }
         }
@@ -73,7 +71,7 @@ public class HashMapTest {
     }
 
     public static void main(String[] args) {
-        HashMapTest hm = new HashMapTest();
+        VectorTest hm = new VectorTest();
         hm.run();
     }
 
