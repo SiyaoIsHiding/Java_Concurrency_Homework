@@ -12,7 +12,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.stream.Stream;
 
-public class FrequencyCount { //TODO: Ask TA about the ./out/
+public class FrequencyCount {
     private static final List<String> stop_words = new ArrayList<String>();
     private static CyclicBarrier barrier;
     private static Counter[] counters;
@@ -113,10 +113,11 @@ public class FrequencyCount { //TODO: Ask TA about the ./out/
     private static void loadStopWords() {
         String str = "";
         try {
-            byte[] encoded = Files.readAllBytes(Paths.get("stop_words"));
+            byte[] encoded = Files.readAllBytes(Paths.get("src/HW4_2/stop_words.md"));
             str = new String(encoded);
         } catch (IOException e) {
-            System.out.println("Error reading stop_words");
+            System.out.println("Error reading stop_words.md");
+            e.printStackTrace();
         }
         String[] words = str.split(",");
         stop_words.addAll(Arrays.asList(words));
@@ -134,7 +135,7 @@ public class FrequencyCount { //TODO: Ask TA about the ./out/
 
         long start = System.nanoTime();
         try {
-            try (Stream<Path> paths = Files.walk(Paths.get("."))) {
+            try (Stream<Path> paths = Files.walk(Paths.get("./src/HW4_2/"))) {
 
                 ArrayList<Path> pathArr = new ArrayList<>();
                 paths.filter(p -> p.toString().endsWith(".txt")).forEach(p -> {
