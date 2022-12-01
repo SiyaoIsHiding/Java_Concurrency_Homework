@@ -3,7 +3,7 @@ package HW3_4;
 public class Main2 {
 
 
-   private static void nap(int millisecs) {
+    private static void nap(int millisecs) {
         try {
             Thread.sleep(millisecs);
         } catch (InterruptedException e) {
@@ -11,16 +11,16 @@ public class Main2 {
         }
     }
 
-    public static void main(String [] args) {
-	HighLevelDisplay d = new JDisplay2();
+    public static void main(String[] args) {
+        HighLevelDisplay d = new JDisplay2();
 
-	for(int i=0; i < 20; i++) {
-	    d.addRow("AAAAAAAAAAAA  "+i);
-	    d.addRow("BBBBBBBBBBBB  "+i);
-	    nap(500);
-	    d.deleteRow(0);
+        for (int i = 0; i < 20; i++) {
+            d.addRow("AAAAAAAAAAAA  " + i);
+            d.addRow("BBBBBBBBBBBB  " + i);
             nap(500);
-	}
-      
+            d.deleteRow(0);
+            nap(500);
+        }
+
     }
 }
